@@ -1,0 +1,21 @@
+{
+  "name": "katty-back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MistyDream/katty-back.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MistyDream/katty-back/issues"
+  },
+  "homepage": "https://github.com/MistyDream/katty-back#readme",
+  "dependencies": {
+  }
+}
