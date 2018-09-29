@@ -1,3 +1,10 @@
+# Exclude configuration files to prevent credentials push
+src/config/*
+!src/config/sample.json
+
+# Exclude vscode configuration
+.vscode/
+
 # Logs
 logs
 *.log

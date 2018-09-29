@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -17,5 +18,23 @@
   },
   "homepage": "https://github.com/MistyDream/katty-back#readme",
   "dependencies": {
+    "hapi": "^17.6.0",
+    "hapi-sequelizejs": "^1.2.0",
+    "mysql2": "^1.6.1",
+    "nodemon": "^1.18.4",
+    "prettier-eslint": "^8.8.2",
+    "sequelize": "^4.39.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.6.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "test/*",
+      "docs/*"
+    ],
+    "delay": "2500"
   }
 }
