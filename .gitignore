@@ -1,6 +1,6 @@
 # Exclude configuration files to prevent credentials push
 src/config/*
-!src/config/sample.json
+!src/config/general.js
 
 # Exclude vscode configuration
 .vscode/
