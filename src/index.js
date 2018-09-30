@@ -6,7 +6,7 @@ async function start() {
     await server.start();
     console.log('Server running at:', server.info.uri);
   } catch (err) {
-    process.exit(1);
+    throw err;
   }
 }
 
