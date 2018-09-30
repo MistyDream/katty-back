@@ -19,11 +19,13 @@
   "homepage": "https://github.com/MistyDream/katty-back#readme",
   "dependencies": {
     "hapi": "^17.6.0",
+    "hapi-auth-jwt2": "^8.1.0",
     "hapi-sequelizejs": "^1.2.0",
     "mysql2": "^1.6.1",
     "nodemon": "^1.18.4",
     "prettier-eslint": "^8.8.2",
-    "sequelize": "^4.39.0"
+    "sequelize": "^4.39.0",
+    "sequelize-cli": "^4.1.1"
   },
   "devDependencies": {
     "eslint": "^5.6.1",
