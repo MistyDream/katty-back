@@ -5,6 +5,9 @@ src/config/*
 # Exclude vscode configuration
 .vscode/
 
+# Exclude intellij configuration
+.idea/
+
 # Logs
 logs
 *.log
