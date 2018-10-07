@@ -20,7 +20,7 @@ const validate = async (decoded) => {
 exports.deployment = async () => {
   // Server configuration
   const server = Hapi.server({
-    port: config.server_port,
+    port: process.env.PORT || config.server_port,
     host: 'localhost',
     debug: { request: ['error'] },
   });
