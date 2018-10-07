@@ -1,19 +1,43 @@
 const Joi = require('joi');
-const UserController = require('./controllers/userController');
+const Controllers = require('./controllers/userController');
+
+const dataSchema = {
+  firstname: Joi.string(),
+  lastname: Joi.string(),
+  username: Joi.string(),
+  peoples_meet: Joi.number().allow(null),
+  email: Joi.string().email({ minDomainAtoms: 2 }),
+};
 
 module.exports = [
   {
     method: 'GET',
-    path: '/',
-    handler: () => 'Hello, world!',
+    path: '/user/{id}',
+    handler: Controllers.UserController.getUserById,
+    options: {
+      auth: false,
+      description: 'Get user profile',
+      notes:
+        'Returns a user profile by the id passed in the path. You must be authenticated to access it',
+      tags: ['api'], // ADD THIS TAG
+      response: {
+        options: {
+          allowUnknown: true,
+          abortEarly: false,
+          stripUnknown: true,
+        },
+        modify: true,
+        status: {
+          200: dataSchema,
+        },
+      },
+    },
   },
   {
     method: ['POST'],
-    path: '/register',
-    handler(request, h) {
-      const controller = new UserController.UserController();
-      controller.register(request.payload);
-    },
+    path: '/user/register',
+    handler: Controllers.UserController.register,
+
     options: {
       auth: false,
       validate: {
@@ -29,9 +53,7 @@ module.exports = [
           lastname: Joi.string()
             .min(3)
             .max(100),
-          email: Joi.string()
-            .min(3)
-            .max(100),
+          email: Joi.string().email({ minDomainAtoms: 2 }),
           password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/),
         },
       },
