@@ -53,6 +53,7 @@ exports.deployment = async () => {
   server.auth.default('jwt');
 
   const queue = [];
+  const rooms = [];
 
   server.subscription('/match', {
     onSubscribe: async (socket, path, params) => {
@@ -79,10 +80,12 @@ exports.deployment = async () => {
   });
 
   setInterval(() => {
+    // console.log(Math.random().toString(36).substr(2));
     if (queue.length >= 2) {
-      queue[0].publish('/match', { type: 'room', message: '/room/dfghjklm' });
+      const room = Math.random().toString(36).substr(2);
+      queue[0].publish('/match', { type: 'room', message: `/room/${room}` });
       queue.shift();
-      queue[0].publish('/match', { type: 'room', message: '/room/dfghjklm' });
+      queue[0].publish('/match', { type: 'room', message: `/room/${room}` });
       queue.shift();
     }
   }, 500);
