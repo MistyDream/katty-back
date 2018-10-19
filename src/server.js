@@ -79,9 +79,9 @@ exports.deployment = async () => {
   setInterval(() => {
     if (queue.length >= 2) {
       const room = Math.random().toString(36).substr(2);
-      queue[0].publish('/match', { type: 'room', message: `/room/${room}` });
+      queue[0].publish('/match', { type: 'room', path: `/room/${room}` });
       queue.shift();
-      queue[0].publish('/match', { type: 'room', message: `/room/${room}` });
+      queue[0].publish('/match', { type: 'room', path: `/room/${room}` });
       queue.shift();
     }
   }, 500);
