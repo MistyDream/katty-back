@@ -6,7 +6,7 @@ const rooms = [];
 const getRoomName = async () => {
   const room = await Math.random().toString(36).substr(2);
 
-  return rooms.find(element => element === room) ? getRoomName() : room;
+  return rooms.find(element => element.name === room) ? getRoomName() : room;
 };
 
 const getMatch = (socket) => {
@@ -26,7 +26,11 @@ const queueAdd = async (socket) => {
   const queueSocket = await getMatch(socket);
 
   if (queueSocket) {
-    const room = await getRoomName();
+    const room = await {
+      name: getRoomName(),
+      users: [socket, queueSocket],
+    };
+    // room.name = await getRoomName();
     await rooms.push(room);
 
     const pathname = `/room/${room}`;
@@ -62,15 +66,17 @@ exports.webSocket = async (server) => {
       return true;
     },
     onUnsubscribe: async (socket, path, params) => {
+      const room = rooms.find(element => element.name === path.slice(6));
+
       await server.publish(path, { type: 'quit', message: 'A user has quit the channel' });
       // todo : test
       await console.log(path.slice('/room/'.length));
-      const index = queue.find(element => element === path.slice('/room/'.length));
-      if (index !== undefined) {
-        await rooms.splice(index, 1);
-      }
-      queue[0].room = '';
-      await queueAdd(socket);
+      // const index = queue.find(element => element === path.slice('/room/'.length));
+      // if (index !== undefined) {
+      //   await rooms.splice(index, 1);
+      // }
+      // queue[0].room = '';
+      // await queueAdd(socket);
     },
   });
 };
