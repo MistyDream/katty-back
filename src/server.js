@@ -1,8 +1,8 @@
 const Hapi = require('hapi');
-const Nes = require('nes');
 
 const plugins = require('./plugins');
 const swagger = require('./swagger');
+const Nes = require('./websocket');
 
 const routes = require('./routes');
 // Read configuration file
@@ -33,18 +33,6 @@ exports.deployment = async () => {
   // Setup swagger
   await server.register(swagger);
 
-  // Setup Nes
-  await server.register({
-    plugin: Nes,
-    options: {
-      heartbeat: false, // remove this line
-      onMessage: (socket, message) => {
-        server.publish(message.path, message);
-        return message;
-      },
-    },
-  });
-
   // Authentication mode
   server.auth.strategy('jwt', 'jwt', {
     key: config.jwt_secret,
@@ -53,39 +41,8 @@ exports.deployment = async () => {
   });
   server.auth.default('jwt');
 
-  const queue = [];
-  // const rooms = [];
-
-  server.subscription('/match', {
-    onSubscribe: async (socket, path, params) => {
-      await queue.push(socket);
-    },
-    onUnsubscribe: async (socket, path, params) => {
-      const index = await queue.findIndex(
-        element => element.auth.credentials.username === socket.auth.credentials.username,
-      );
-      if (index !== undefined) {
-        await queue.splice(index, 1);
-      }
-    },
-  });
-
-  server.subscription('/room/{slug}', {
-    onUnsubscribe: async (socket, path, params) => {
-      server.publish(path, { type: 'quit', message: 'A user has quit the channel' });
-      queue.push(socket);
-    },
-  });
-
-  setInterval(() => {
-    if (queue.length >= 2) {
-      const room = Math.random().toString(36).substr(2);
-      queue[0].publish('/match', { type: 'room', path: `/room/${room}` });
-      queue.shift();
-      queue[0].publish('/match', { type: 'room', path: `/room/${room}` });
-      queue.shift();
-    }
-  }, 500);
+  // Setup Nes websocket
+  await Nes.webSocket(server);
 
   // add routes
   await server.route(routes);
