@@ -6,15 +6,7 @@ const rooms = [];
 const getRoomName = async () => {
   const room = await Math.random().toString(36).substr(2);
 
-  let exist = false;
-  for (let i = 0; i < rooms.length; i += 1) {
-    if (rooms.find(element => element === room)) {
-      exist = true;
-      break;
-    }
-  }
-
-  return exist ? getRoomName() : room;
+  return rooms.find(element => element === room) ? getRoomName() : room;
 };
 
 const getMatch = (socket) => {
@@ -34,12 +26,12 @@ const queueAdd = async (socket) => {
   const queueSocket = await getMatch(socket);
 
   if (queueSocket) {
-    let room = await getRoomName();
+    const room = await getRoomName();
     await rooms.push(room);
 
-    room = `/room/${room}`;
-    await socket.send({ type: 'room', path: room });
-    await queueSocket.send({ type: 'room', path: room });
+    const pathname = `/room/${room}`;
+    await socket.send({ type: 'room', path: pathname });
+    await queueSocket.send({ type: 'room', path: pathname });
   } else {
     await queue.push(socket);
   }
@@ -51,9 +43,6 @@ exports.webSocket = async (server) => {
     plugin: Nes,
     options: {
       heartbeat: false, // remove this line
-      onConnection: async (socket) => {
-        // const socketAlreadyConnect = await queue.find(element => element.auth.credentials.id === socket.auth.credentials.id);
-      },
       onMessage: (socket, message) => {
         server.publish(message.path, message);
         return message;
