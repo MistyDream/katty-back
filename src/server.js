@@ -24,6 +24,7 @@ exports.deployment = async () => {
     port: process.env.PORT || config.server_port,
     host: '0.0.0.0',
     debug: { request: ['error'] },
+    routes: { cors: true },
   });
 
   // register plugins
