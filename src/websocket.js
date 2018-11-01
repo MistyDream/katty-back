@@ -1,4 +1,5 @@
 const Nes = require('nes');
+const Moment = require('moment');
 
 const queue = [];
 const rooms = [];
@@ -6,7 +7,7 @@ const rooms = [];
 const getRoomName = async () => {
   const room = await Math.random().toString(36).substr(2);
 
-  return rooms.find(element => element === room) ? getRoomName() : room;
+  return rooms.find(element => element.name === room) ? getRoomName() : room;
 };
 
 const getMatch = (socket) => {
@@ -26,10 +27,14 @@ const queueAdd = async (socket) => {
   const queueSocket = await getMatch(socket);
 
   if (queueSocket) {
-    const room = await getRoomName();
+    const room = await {
+      name: await getRoomName(),
+      users: [socket, queueSocket],
+    };
+    // room.name = await getRoomName();
     await rooms.push(room);
 
-    const pathname = `/room/${room}`;
+    const pathname = `/room/${room.name}`;
     await socket.send({ type: 'room', path: pathname });
     await queueSocket.send({ type: 'room', path: pathname });
   } else {
@@ -42,7 +47,6 @@ exports.webSocket = async (server) => {
   await server.register({
     plugin: Nes,
     options: {
-      heartbeat: false, // remove this line
       onMessage: (socket, message) => {
         server.publish(message.path, message);
         return message;
@@ -51,26 +55,36 @@ exports.webSocket = async (server) => {
   });
 
   server.subscription('/match', {
-    onSubscribe: async (socket, path, params) => {
+    onSubscribe: async (socket) => {
       await queueAdd(socket);
+    },
+    onUnsubscribe: async (socket) => {
+      const index = queue.indexOf(socket);
+      queue.splice(index, 1);
     },
   });
 
   server.subscription('/room/{slug}', {
-    filter: (path, message, options) => {
-      console.log(options.credentials);
-      return true;
-    },
     onUnsubscribe: async (socket, path, params) => {
-      await server.publish(path, { type: 'quit', message: 'A user has quit the channel' });
-      // todo : test
-      await console.log(path.slice('/room/'.length));
-      const index = queue.find(element => element === path.slice('/room/'.length));
-      if (index !== undefined) {
-        await rooms.splice(index, 1);
-      }
-      queue[0].room = '';
+      const room = rooms.find(element => element.name === path.slice(6));
+      rooms.splice(rooms.indexOf(room), 1);
+      const { users } = room;
+      const otherSocket = users.find(
+        element => element.auth.credentials.id !== socket.auth.credentials.id,
+      );
+
+      await otherSocket.revoke(path, 'A user has quit the channel');
+
+      // console.log(socket);
+      // socket.blacklist.push({
+      //   id: otherSocket.auth.credentials.id,
+      //   date: Moment().add(10, 'm').toDate(),
+      // });
+      // socket.auth. blacklist;
+      // console.log(socket.auth);
       await queueAdd(socket);
+      await queueAdd(otherSocket);
+      // console.log('test');
     },
   });
 };
