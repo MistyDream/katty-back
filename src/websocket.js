@@ -47,6 +47,10 @@ exports.webSocket = async (server) => {
   await server.register({
     plugin: Nes,
     options: {
+      heartbeat: {
+        interval: 5001,
+        timeout: 5000,
+      },
       onMessage: (socket, message) => {
         server.publish(message.path, message);
         return message;
