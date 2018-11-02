@@ -35,8 +35,8 @@ const queueAdd = async (socket) => {
     await rooms.push(room);
 
     const pathname = `/room/${room.name}`;
-    await socket.publish({ type: 'room', path: pathname });
-    await queueSocket.publish({ type: 'room', path: pathname });
+    await socket.publish('/match', { type: 'room', path: pathname });
+    await queueSocket.publish('/match', { type: 'room', path: pathname });
   } else {
     await queue.push(socket);
   }
