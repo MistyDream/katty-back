@@ -57,6 +57,7 @@ exports.webSocket = async (server) => {
           id: socket.auth.credentials.id,
           name: socket.auth.credentials.username,
         };
+        msg.sendAt = Moment();
         server.publish(message.path, msg);
         return message;
       },
