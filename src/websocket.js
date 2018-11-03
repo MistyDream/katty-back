@@ -52,7 +52,12 @@ exports.webSocket = async (server) => {
         timeout: 5000,
       },
       onMessage: (socket, message) => {
-        server.publish(message.path, message);
+        const msg = message;
+        msg.user = {
+          id: socket.auth.credentials.id,
+          name: socket.auth.credentials.username,
+        };
+        server.publish(message.path, msg);
         return message;
       },
     },
