@@ -76,13 +76,15 @@ exports.webSocket = async (server) => {
   server.subscription('/room/{slug}', {
     onUnsubscribe: async (socket, path, params) => {
       const room = rooms.find(element => element.name === path.slice(6));
-      rooms.splice(rooms.indexOf(room), 1);
-      const { users } = room;
-      const otherSocket = users.find(
-        element => element.auth.credentials.id !== socket.auth.credentials.id,
-      );
+      if (room) {
+        rooms.splice(rooms.indexOf(room), 1);
+        const { users } = room;
+        const otherSocket = users.find(
+          element => element.auth.credentials.id !== socket.auth.credentials.id,
+        );
 
-      await otherSocket.revoke(path, { message: 'A user has quit the channel' });
+        await otherSocket.revoke(path, { message: 'A user has quit the channel' });
+      }
     },
   });
 };
