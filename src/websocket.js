@@ -83,7 +83,7 @@ exports.webSocket = async (server) => {
         element => element.auth.credentials.id !== socket.auth.credentials.id,
       );
 
-      await otherSocket.revoke(path, 'A user has quit the channel');
+      await otherSocket.revoke(path, { message: 'A user has quit the channel' });
 
       // console.log(socket);
       // socket.blacklist.push({
