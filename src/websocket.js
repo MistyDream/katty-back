@@ -69,7 +69,9 @@ exports.webSocket = async (server) => {
     },
     onUnsubscribe: async (socket) => {
       const index = queue.indexOf(socket);
-      queue.splice(index, 1);
+      if (index >= 0) {
+        queue.splice(index, 1);
+      }
     },
   });
 
