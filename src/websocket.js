@@ -76,7 +76,7 @@ exports.webSocket = async (server) => {
   });
 
   server.subscription('/room/{slug}', {
-    onUnsubscribe: async (socket, path, params) => {
+    onUnsubscribe: async (socket, path) => {
       const room = rooms.find(element => element.name === path.slice(6));
       if (room) {
         rooms.splice(rooms.indexOf(room), 1);
