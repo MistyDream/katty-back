@@ -31,7 +31,6 @@ const queueAdd = async (socket) => {
       name: await getRoomName(),
       users: [socket, queueSocket],
     };
-    // room.name = await getRoomName();
     await rooms.push(room);
 
     const pathname = `/room/${room.name}`;
@@ -84,17 +83,6 @@ exports.webSocket = async (server) => {
       );
 
       await otherSocket.revoke(path, { message: 'A user has quit the channel' });
-
-      // console.log(socket);
-      // socket.blacklist.push({
-      //   id: otherSocket.auth.credentials.id,
-      //   date: Moment().add(10, 'm').toDate(),
-      // });
-      // socket.auth. blacklist;
-      // console.log(socket.auth);
-      await queueAdd(socket);
-      await queueAdd(otherSocket);
-      // console.log('test');
     },
   });
 };
